@@ -8,10 +8,10 @@
 
 
 /*
-
-    TODO: ADD graphics via SDL
-    TODO: more test to make sure game is running correctly 
-
+  ************************************************************************************
+  *Sorry for anyone reading this... Project was done late at night after homework or *
+  *between classes. This code is messy and dirty. My apologies.                      *
+  ************************************************************************************
 */
 
 int checkRules(int array[ROW][COL], int row, int col){
@@ -83,11 +83,11 @@ int checkRules(int array[ROW][COL], int row, int col){
     }else{
         returnCode = 0; 
     }
-
     return returnCode; 
 }
-
-void printBoard(int array[ROW][COL]){
+// I would not use this function, was used for v1 of this project 
+// the board is now quite large for this function call 
+void printBoard(int array[ROW][COL]){ 
     int i,j;
 
     for(i = 0; i < ROW;i++){
@@ -106,7 +106,7 @@ int main(){
     int swapBoard[ROW][COL]; 
     int board[ROW][COL];
     
-    // int sdl window 
+   // int sdl window 
    SDL_Window* window = NULL;
    SDL_Renderer* renderer = NULL;
 
@@ -125,56 +125,41 @@ int main(){
             
         }
     }
-
+    
+    // run loop until window is closed
     SDL_Event e; 
     bool quit = false;
     while(quit == false){
-    //for(test = 0; test < 500; test++){
-        // check the board
+        // Swap boards for correct evolution of cells 
         for (i = 0; i < ROW; i++) {
             for (j = 0; j < COL; j++) { 
                 swapBoard[i][j] = checkRules(board, i, j);
             }
         }
+            
         
-       // printBoard(swapBoard);
-       // printf("\n");
-       // PrintBoard
-       SDL_SetRenderDrawColor(renderer, 0,0,0,255);
-       SDL_RenderClear(renderer);
-
+        // Set Window to black and cells to white
+        SDL_SetRenderDrawColor(renderer, 0,0,0,255);
+        SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    for(int i = 0; i < ROW; i++){
-      for(int j = 0; j < COL; j++){
-        if(board[i][j] == 1){
-          SDL_RenderDrawPoint(renderer, i, j); 
-           
-        }
-      }
-    }
 
-     // This may need to be inside loop? 
-     SDL_RenderPresent(renderer);
-
-   /* if(window) {
-    // Go through the pending event queue once
-    SDL_Event event;
-    while(SDL_PollEvent(&event)){
-        // do nothing
-    }
-    SDL_Delay(100);
-    */
-    //SDL_Event e; 
-    //bool quit = false;
-    
+        for(int i = 0; i < ROW; i++){
+            for(int j = 0; j < COL; j++){
+                if(board[i][j] == 1){
+                SDL_RenderDrawPoint(renderer, i, j); 
                 
-    while(SDL_PollEvent(&e)){
-        if(e.type == SDL_QUIT)quit = true;
-    }
-     
+                }
+            }
+        }
 
-
-
+        // Render Changes
+        SDL_RenderPresent(renderer);
+        
+        while(SDL_PollEvent(&e)){
+            if(e.type == SDL_QUIT)quit = true;
+        }
+        
+        
         // swap the boards afterwards
         for (i = 0; i < ROW; i++) {
             for (j = 0; j < COL; j++) { 
