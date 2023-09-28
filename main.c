@@ -1,13 +1,15 @@
 #include <stdio.h>
+#include <time.h>
+#include <SDL2/SDL.h>
+#include <stdbool.h> 
 
-#define ROW 20
-#define COL 20
+#define ROW 640
+#define COL 480
 
 
 /*
 
     TODO: ADD graphics via SDL
-    TODO: Find starter board too produce more interesting results
     TODO: more test to make sure game is running correctly 
 
 */
@@ -102,50 +104,86 @@ int main(){
     int i,j;  
     int returnedVal; 
     int swapBoard[ROW][COL]; 
-    int board[ROW][COL] = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0},
-    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0}
-};
+    int board[ROW][COL];
+    
+    // int sdl window 
+   SDL_Window* window = NULL;
+   SDL_Renderer* renderer = NULL;
 
+   SDL_Init(SDL_INIT_VIDEO);
+   SDL_CreateWindowAndRenderer(ROW,COL,0, &window, &renderer);
 
-    for(test = 0; test < 50; test++){
+   // Fill board randomly with 1 and 0 to start
+    srand(time(0));
+    for(i = 0; i < ROW; i++){
+        for(j = 0; j < COL; j++){
+            if ((rand() % 10) % 2 == 0){
+                board[i][j] = 1;
+            }else{
+                board[i][j] = 0;
+            }
+            
+        }
+    }
 
+    SDL_Event e; 
+    bool quit = false;
+    while(quit == false){
+    //for(test = 0; test < 500; test++){
+        // check the board
         for (i = 0; i < ROW; i++) {
             for (j = 0; j < COL; j++) { 
                 swapBoard[i][j] = checkRules(board, i, j);
             }
         }
+        
+       // printBoard(swapBoard);
+       // printf("\n");
+       // PrintBoard
+       SDL_SetRenderDrawColor(renderer, 0,0,0,255);
+       SDL_RenderClear(renderer);
 
-        printBoard(swapBoard);
-        printf("\n");
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    for(int i = 0; i < ROW; i++){
+      for(int j = 0; j < COL; j++){
+        if(board[i][j] == 1){
+          SDL_RenderDrawPoint(renderer, i, j); 
+           
+        }
+      }
+    }
+
+     // This may need to be inside loop? 
+     SDL_RenderPresent(renderer);
+
+   /* if(window) {
+    // Go through the pending event queue once
+    SDL_Event event;
+    while(SDL_PollEvent(&event)){
+        // do nothing
+    }
+    SDL_Delay(100);
+    */
+    //SDL_Event e; 
+    //bool quit = false;
+    
+                
+    while(SDL_PollEvent(&e)){
+        if(e.type == SDL_QUIT)quit = true;
+    }
+     
 
 
+
+        // swap the boards afterwards
         for (i = 0; i < ROW; i++) {
             for (j = 0; j < COL; j++) { 
                 board[i][j] = swapBoard[i][j];
             }
         }
     }
-
-
 }
+
+  
 
     
